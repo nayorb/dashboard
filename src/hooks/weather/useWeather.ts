@@ -12,7 +12,6 @@ const useWeather = () => {
 
     (async () => {
       const data = await WeatherService.getCurrentData(localCity);
-      console.log(data);
       setWeatherData(data);
     })();
   }, [localCity]);

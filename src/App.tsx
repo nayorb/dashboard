@@ -1,29 +1,18 @@
 import React from "react";
-import { Autocomplete, Input } from "@mui/material";
-import CityService from "./services/city.service";
-import useWeather from "./hooks/weather/useWeather";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import RecipesPage from "./pages/modules/recipes/RecipesPage";
+import MainMenu from "./components/common/main-menu/MainMenu";
 
 function App() {
-  const { localCity, setCity, weatherData } = useWeather();
-
   return (
-    <div>
-      {weatherData && <img src={`http://openweathermap.org/img/wn/${weatherData.current.weather.icon}@2x.png`} />}
-      <Autocomplete
-        renderInput={({ InputProps, inputProps }) => (
-          <Input
-            {...InputProps}
-            inputProps={inputProps}
-            sx={{
-              width: 512,
-            }}
-          />
-        )}
-        options={CityService.getListOfCities()}
-        value={localCity}
-        onChange={(_, option) => setCity(option || null)}
-      />
-    </div>
+    <BrowserRouter>
+      <div>
+        <MainMenu />
+        <Routes>
+          <Route path="/" element={<RecipesPage />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

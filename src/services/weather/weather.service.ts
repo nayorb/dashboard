@@ -1,4 +1,4 @@
-import { WeatherData } from "./mappers/weather.service.types";
+import { WeatherData } from "./weather.service.types";
 import mapWeatherDataToAppWeatherData from "./mappers/mapWeatherDataToAppWeatherData";
 import { IAppWeatherData } from "../../hooks/weather/useWeather.types";
 
@@ -18,13 +18,8 @@ const WeatherService = {
     const response = await fetch(getPlaceOverviewUrl(location));
     const data = await response.json();
     if (data.cod === 200) {
-      console.log(data);
-
       const oneCallResponse = await fetch(getPlaceDetailsUrl(data.coord));
       const oneCallData: WeatherData = await oneCallResponse.json();
-      if (oneCallData) {
-        console.log("oneCallData", oneCallData);
-      }
       return mapWeatherDataToAppWeatherData(oneCallData, data.name);
     } else {
       throw new Error("WeatherService.getCurrentData | data.cod equal to ", data.cod);
