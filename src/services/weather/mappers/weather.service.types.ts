@@ -1,3 +1,23 @@
+export type WeatherIcon =
+  | "01d"
+  | "01n"
+  | "02d"
+  | "02n"
+  | "03d"
+  | "03n"
+  | "04d"
+  | "04n"
+  | "09d"
+  | "09n"
+  | "10d"
+  | "10n"
+  | "11d"
+  | "11n"
+  | "13d"
+  | "13n"
+  | "50d"
+  | "50n";
+
 export interface WeatherCurrentData {
   dt: number;
   sunrise: number;
@@ -16,9 +36,9 @@ export interface WeatherCurrentData {
   weather: [
     {
       id: number;
-      main: "Clouds";
-      description: "scattered clouds";
-      icon: "03d";
+      main: string;
+      description: string;
+      icon: WeatherIcon;
     },
   ];
 }
@@ -39,9 +59,9 @@ export interface WeatherHourlyData {
   weather: [
     {
       id: number;
-      main: "Clouds";
-      description: "broken clouds";
-      icon: "04d";
+      main: string;
+      description: string;
+      icon: WeatherIcon;
     },
   ];
   pop: 0;
@@ -76,15 +96,15 @@ export interface WeatherDailyData {
   wind_gust: number;
   weather: [
     {
-      id: 802;
-      main: "Clouds";
-      description: "scattered clouds";
-      icon: "03d";
+      id: number;
+      main: string;
+      description: string;
+      icon: WeatherIcon;
     },
   ];
-  clouds: 47;
-  pop: 0;
-  uvi: 6.76;
+  clouds: number;
+  pop: number;
+  uvi: number;
 }
 
 export interface WeatherData {

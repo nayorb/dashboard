@@ -1,23 +1,14 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Autocomplete, Input } from "@mui/material";
-import WeatherService from "./services/weather/weather.service";
 import CityService from "./services/city.service";
-import useLocalCity from "./hooks/useLocalCity";
+import useWeather from "./hooks/weather/useWeather";
 
 function App() {
-  const { localCity, setCity } = useLocalCity();
-
-  useEffect(() => {
-    if (!localCity) return;
-
-    (async () => {
-      const response = await WeatherService.getCurrentData(localCity);
-      console.log("Response", response);
-    })();
-  }, [localCity]);
+  const { localCity, setCity, weatherData } = useWeather();
 
   return (
     <div>
+      {weatherData && <img src={`http://openweathermap.org/img/wn/${weatherData.current.weather.icon}@2x.png`} />}
       <Autocomplete
         renderInput={({ InputProps, inputProps }) => (
           <Input
