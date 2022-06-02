@@ -1,4 +1,4 @@
-export enum RecipeIngredientType {
+export enum RecipeUnit {
   g = "g",
   ml = "ml",
   ks = "ks",

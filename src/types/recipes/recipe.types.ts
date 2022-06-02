@@ -1,10 +1,10 @@
 import { RecipeCategory } from "./recipe-category.types";
-import { RecipeIngredientType } from "./recipe-ingredient-types.types";
+import { RecipeUnit } from "./recipe-ingredient-types.types";
 import { RecipeIngredient } from "./recipe-ingredients.types";
 
 export interface IAppRecipeIngredient {
-  type: RecipeIngredientType;
-  amount: number | [number, number];
+  unit?: RecipeUnit;
+  amount?: number | [number, number];
   ingredient: RecipeIngredient;
 }
 
