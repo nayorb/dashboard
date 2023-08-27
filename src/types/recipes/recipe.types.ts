@@ -2,21 +2,21 @@ import { RecipeCategory } from "./recipe-category.types";
 import { RecipeUnit } from "./recipe-ingredient-types.types";
 import { RecipeIngredient } from "./recipe-ingredients.types";
 
-export interface IAppRecipeIngredient {
+export interface IAppRecipeIngredientData {
   unit?: RecipeUnit;
   amount?: number | [number, number];
-  ingredient: RecipeIngredient;
+  title?: string;
 }
 
 export interface IAppRecipeIngredientCategory {
   title?: string;
-  ingredients: IAppRecipeIngredient[];
+  ingredients: IAppRecipeIngredientData[];
 }
 
 export interface IAppRecipe {
   title: string;
   id: string;
-  categories: RecipeCategory[];
-  ingredientCategories: IAppRecipeIngredientCategory[];
+  categories: Record<RecipeCategory, boolean>;
+  ingredientCategories: Record<RecipeIngredient, IAppRecipeIngredientData>;
   steps: string[];
 }

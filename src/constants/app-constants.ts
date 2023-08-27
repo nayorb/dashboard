@@ -1,0 +1,2 @@
+export const COLORS_PROJECT_ID = "2311429662";
+export const TODOS_REFRESH_INTERVAL = 5000;

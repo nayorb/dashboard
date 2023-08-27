@@ -4,4 +4,6 @@ export enum RecipeUnit {
   ks = "ks",
   KL = "KL",
   PL = "PL",
+  platky = "platky",
+  salka = "salka",
 }
