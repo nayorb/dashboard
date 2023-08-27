@@ -1,0 +1,9 @@
+{
+  "name": "Todoist Task Adder wohooooooo",
+  "version": "0.0.0.1",
+  "manifest_version": 3,
+  "description": "An extension to add tasks to Todoist via API.",
+  "action": {
+    "default_popup": "popup/popup.html"
+  }
+}
