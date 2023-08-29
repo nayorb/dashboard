@@ -1,19 +1,50 @@
 import { GameBoard, GameTile } from "../TileGame.types";
+import { moveRow } from "./moveRow";
 
-export const mergeTiles = (board: GameBoard): GameBoard => {
-  const newBoard = { ...board };
-  const tiles = newBoard.tiles.map((tile) => {
-    if (tile.position % 4 !== 0) {
-      const leftTile = newBoard.tiles.find((t) => t.position === tile.position - 1);
-      if (leftTile && leftTile.value === tile.value) {
-        leftTile.value *= 2;
-        tile.value = 0;
-      }
-    }
-    return tile;
-  });
-  newBoard.tiles = tiles;
-  return newBoard;
+export type DIRECTION = "N" | "S" | "E" | "W";
+
+export const POSITION_0 = 0;
+export const POSITION_1 = 1;
+export const POSITION_2 = 2;
+export const POSITION_3 = 3;
+export const POSITION_4 = 4;
+export const POSITION_5 = 5;
+export const POSITION_6 = 6;
+export const POSITION_7 = 7;
+export const POSITION_8 = 8;
+export const POSITION_9 = 9;
+export const POSITION_10 = 10;
+export const POSITION_11 = 11;
+export const POSITION_12 = 12;
+export const POSITION_13 = 13;
+export const POSITION_14 = 14;
+export const POSITION_15 = 15;
+
+export const DIRECTION_POSITIONS: Record<DIRECTION, number[][]> = {
+  S: [
+    [POSITION_0, POSITION_4, POSITION_8, POSITION_12],
+    [POSITION_1, POSITION_5, POSITION_9, POSITION_13],
+    [POSITION_2, POSITION_6, POSITION_10, POSITION_14],
+    [POSITION_3, POSITION_7, POSITION_11, POSITION_15],
+  ],
+  N: [
+    [POSITION_12, POSITION_8, POSITION_4, POSITION_0],
+    [POSITION_13, POSITION_9, POSITION_5, POSITION_1],
+    [POSITION_14, POSITION_10, POSITION_6, POSITION_2],
+    [POSITION_15, POSITION_11, POSITION_7, POSITION_3],
+  ],
+  E: [
+    [POSITION_0, POSITION_1, POSITION_2, POSITION_3],
+    [POSITION_4, POSITION_5, POSITION_6, POSITION_7],
+    [POSITION_8, POSITION_9, POSITION_10, POSITION_11],
+    [POSITION_12, POSITION_13, POSITION_14, POSITION_15],
+  ],
+  W: [
+    [POSITION_3, POSITION_2, POSITION_1, POSITION_0],
+    [POSITION_7, POSITION_6, POSITION_5, POSITION_4],
+    [POSITION_11, POSITION_10, POSITION_9, POSITION_8],
+    [POSITION_15, POSITION_14, POSITION_13, POSITION_12],
+  ],
 };
 
 export const addNewTile = (board: GameBoard): GameBoard => {
@@ -40,88 +71,29 @@ export const getNewTile = () => ({
   position: getRandomPosition(),
 });
 
-export const moveRow = (row: number[]) => {
-  // start from the end
-  // if the current tile is empty, move to the next one
-  // if the current tile is not empty, check the next one
-  // if the next one is empty, move the current tile to the next one
-  // if the next one is not empty, check if they are equal
-  // if they are equal, merge them
-  // if they are not equal, move to the next one
-  const newRow = [...row];
-  for (let i = 3; i >= 0; i--) {
-    if (newRow[i] === 0) {
-      continue;
-    }
-    for (let j = i + 1; j < 4; j++) {
-      if (newRow[j] === 0) {
-        newRow[j] = newRow[i];
-        newRow[i] = 0;
-        break;
-      } else if (newRow[j] === newRow[i]) {
-        newRow[j] += 1;
-        newRow[i] = 0;
-        break;
-      }
-    }
-  }
-  return newRow;
-};
-
-export const getRow = (board: GameBoard, row: number, direction: "N" | "S" | "E" | "W") => {
-  const positions = Array.from(Array(4).keys()).map((i) => {
-    switch (direction) {
-      case "N":
-        return row + i * 4;
-      case "S":
-        return row + (3 - i) * 4;
-      case "E":
-        return row * 4 + i;
-      case "W":
-        return row * 4 + (3 - i);
-    }
-  });
-  return positions.map((position) => {
-    const tile = board.tiles.find((t) => t.position === position);
-    return tile ? tile.value : 0;
-  });
-};
-
-export const getTilePosition = (row: number, rowPosition: number, direction: "N" | "S" | "E" | "W") => {
-  switch (direction) {
-    case "N":
-      return row + rowPosition * 4;
-    case "S":
-      return row + (3 - rowPosition) * 4;
-    case "E":
-      return row * 4 + rowPosition;
-    case "W":
-      return row * 4 + (3 - rowPosition);
-  }
-};
-
 export const moveBoard = (board: GameBoard, direction: "N" | "S" | "E" | "W") => {
   let newBoard = { ...board };
-  const tiles: GameTile[] = [];
+  const newTiles: GameTile[] = [];
 
-  for (let i = 0; i < 4; i++) {
-    const row = getRow(newBoard, i, direction);
-    const newRow = moveRow(row);
-    newRow.forEach((value, index) => {
-      if (value > 0) {
-        const tile = {
-          id: getRandomId(),
-          value,
-          position: getTilePosition(i, index, direction),
-        };
-        tile.value = value;
-        tile.position = getTilePosition(i, index, direction);
-        tiles.push(tile);
+  DIRECTION_POSITIONS[direction].forEach((row) => {
+    const positions = row;
+    const tiles = positions.map((position) => {
+      const tile = newBoard.tiles.find((t) => t.position === position);
+      return tile ?? null;
+    });
+    const movedTiles = moveRow(tiles);
+    movedTiles.forEach((moveTile, i) => {
+      if (moveTile) {
+        const tile: GameTile = { ...moveTile, position: 0 };
+        tile.position = positions[i];
+        newTiles.push(tile);
       }
     });
-  }
+  });
 
-  newBoard.tiles = tiles;
+  newBoard.tiles = newTiles;
+
   newBoard = addNewTile(newBoard);
+
   return newBoard;
 };

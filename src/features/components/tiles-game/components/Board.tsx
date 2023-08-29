@@ -20,7 +20,7 @@ const Board = ({ board }: BoardProps) => {
       }}
     >
       {allTiles.map((tile) => (
-        <div className="w-full h-full bg-white rounded-2xl" />
+        <div className="w-full h-full bg-white rounded-2xl flex items-center justify-center"></div>
       ))}
       {board.tiles.map((tile) => (
         <TileContainer tile={tile} key={tile.id} />

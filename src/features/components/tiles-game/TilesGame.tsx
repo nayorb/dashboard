@@ -9,7 +9,7 @@ const TilesGame = ({}: TilesGameProps) => {
   return (
     <div>
       <div>
-        <Board board={board} />
+        {board && <Board board={board} />}
         <button onClick={left}>Left</button>
         <button onClick={right}>Right</button>
         <button onClick={up}>Up</button>

@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { GameBoard } from "./TileGame.types";
-import { moveUp } from "./board-movements/up";
-import { moveDown } from "./board-movements/down";
-import { moveLeft } from "./board-movements/left";
-import { moveRight } from "./board-movements/right";
-import { getNewTile } from "./board-movements/common";
+import { getNewTile, moveBoard } from "./board-movements/common";
 
 export const TILE_SIZE = 128;
 export const BOARD_PADDING = 4;
@@ -12,33 +8,30 @@ export const TILE_MARGIN = 4;
 export const BOARD_SIZE = TILE_SIZE * 4 + BOARD_PADDING * 2 + TILE_MARGIN * 3;
 
 const useBoard = () => {
+  const [listener, setListener] = useState<((e: KeyboardEvent) => void) | null>(null);
   const [board, setBoard] = useState<GameBoard>({
     tiles: [getNewTile()],
   });
 
   const left = useCallback(() => {
-    console.log("left");
-    setBoard((prevBoard) => moveLeft(prevBoard));
+    setBoard((prevBoard: GameBoard) => moveBoard(prevBoard, "W"));
   }, []);
 
   const right = useCallback(() => {
-    console.log("right");
-    setBoard((prevBoard) => moveRight(prevBoard));
+    setBoard((prevBoard: GameBoard) => moveBoard(prevBoard, "E"));
   }, []);
 
   const up = useCallback(() => {
-    console.log("up");
-    setBoard((prevBoard) => moveUp(prevBoard));
+    setBoard((prevBoard: GameBoard) => moveBoard(prevBoard, "N"));
   }, []);
 
   const down = useCallback(() => {
-    console.log("down");
-    setBoard((prevBoard) => moveDown(prevBoard));
+    setBoard((prevBoard: GameBoard) => moveBoard(prevBoard, "S"));
   }, []);
 
-  // attach the functions to the keys
-  useEffect(() => {
-    window.addEventListener("keydown", (e) => {
+  const keyDownHandler = useCallback(
+    (e: KeyboardEvent) => {
+      if (!e) return;
       if (e.key === "ArrowLeft") {
         left();
       } else if (e.key === "ArrowRight") {
@@ -48,7 +41,23 @@ const useBoard = () => {
       } else if (e.key === "ArrowDown") {
         down();
       }
-    });
+    },
+    [left, right, up, down],
+  );
+
+  // attach the functions to the keys
+  useEffect(() => {
+    if (listener === null) {
+      setListener(keyDownHandler);
+      window.addEventListener("keydown", keyDownHandler);
+      console.log("adding listener");
+    }
+
+    return () => {
+      if (listener !== null) {
+        window.removeEventListener("keydown", listener);
+      }
+    };
   }, [left, right, up, down]);
 
   return {
@@ -57,6 +66,7 @@ const useBoard = () => {
     right,
     up,
     down,
+    keyDownHandler,
   };
 };
 
